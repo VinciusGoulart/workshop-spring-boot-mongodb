@@ -6,7 +6,10 @@ import com.vinicius.workshopmongodb.servicies.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,5 +32,14 @@ public class UserResource {
         UserDTO dto = new UserDTO(service.findById(id));
 
         return ResponseEntity.ok().body(dto);
+    }
+    @PostMapping
+    public ResponseEntity<Void> findById(@RequestBody UserDTO obj){
+        User user = service.fromDTO(obj);
+        user = service.insert(user);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(user.getId()).toUri();
+
+        return ResponseEntity.created(uri).build();
     }
 }
