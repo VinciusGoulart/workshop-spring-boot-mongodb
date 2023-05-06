@@ -24,22 +24,40 @@ public class UserResource {
     public ResponseEntity<List<UserDTO>> findAll() {
         List<User> list = service.findAll();
         List<UserDTO> dtoList = list.stream().map(x -> new UserDTO(x)).collect(Collectors.toList());
+
         return ResponseEntity.ok().body(dtoList);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<UserDTO> findById(@PathVariable String id){
+    public ResponseEntity<UserDTO> findById(@PathVariable String id) {
         UserDTO dto = new UserDTO(service.findById(id));
 
         return ResponseEntity.ok().body(dto);
     }
+
     @PostMapping
-    public ResponseEntity<Void> findById(@RequestBody UserDTO obj){
+    public ResponseEntity<Void> findById(@RequestBody UserDTO obj) {
         User user = service.fromDTO(obj);
         user = service.insert(user);
 
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(user.getId()).toUri();
 
         return ResponseEntity.created(uri).build();
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable String id) {
+        service.delete(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Void> update(@RequestBody UserDTO obj,@PathVariable String id) {
+        User user = service.fromDTO(obj);
+        user.setId(id);
+        user = service.update(user);
+        return ResponseEntity.noContent().build();
+
     }
 }
