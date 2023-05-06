@@ -5,9 +5,7 @@ import com.vinicius.workshopmongodb.dto.UserDTO;
 import com.vinicius.workshopmongodb.servicies.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,4 +24,10 @@ public class UserResource {
         return ResponseEntity.ok().body(dtoList);
     }
 
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<UserDTO> findById(@PathVariable String id){
+        UserDTO dto = new UserDTO(service.findById(id));
+
+        return ResponseEntity.ok().body(dto);
+    }
 }
