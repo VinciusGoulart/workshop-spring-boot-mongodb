@@ -1,5 +1,6 @@
 package com.vinicius.workshopmongodb.resources;
 
+import com.vinicius.workshopmongodb.domain.Post;
 import com.vinicius.workshopmongodb.domain.User;
 import com.vinicius.workshopmongodb.dto.UserDTO;
 import com.vinicius.workshopmongodb.servicies.UserService;
@@ -52,11 +53,16 @@ public class UserResource {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Void> update(@RequestBody UserDTO obj,@PathVariable String id) {
+    public ResponseEntity<Void> update(@RequestBody UserDTO obj, @PathVariable String id) {
         User user = service.fromDTO(obj);
         user.setId(id);
         user = service.update(user);
         return ResponseEntity.noContent().build();
+    }
 
+    @GetMapping(value = "/{id}/posts")
+    public ResponseEntity<List<Post>> findPosts(@PathVariable String id) {
+        User obj = service.findById(id);
+        return ResponseEntity.ok().body(obj.getPosts());
     }
 }
